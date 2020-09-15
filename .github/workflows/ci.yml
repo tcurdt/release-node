@@ -115,6 +115,7 @@ jobs:
   expire:
     name: Cleanup
     runs-on: ubuntu-latest
+    steps:
     - name: Expire
       uses: kolpav/purge-artifacts-action@v1
       with:
