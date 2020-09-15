@@ -90,7 +90,7 @@ jobs:
     #   run: false
     - name: Show
       run: find .
-    - run: gunzip -c docker-${{ github.sha }} | docker load
+    - run: gunzip -c image.tar.gz | docker load
     - run: docker images
 
     - name: Import 12.x
