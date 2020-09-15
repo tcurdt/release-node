@@ -1,0 +1,8 @@
+{
+  "name": "@tcurdt/release-node",
+  "version": "0.0.1",
+  "description": "node release pipeline",
+  "main": "index.js",
+  "author": "Torsten Curdt",
+  "license": "MIT"
+}
