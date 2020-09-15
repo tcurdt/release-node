@@ -81,7 +81,6 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: docker-${{ github.sha }}
-        path: image.tar.gz
     #   id: docker
     #   uses: actions/cache@v2
     #   with:
@@ -89,7 +88,9 @@ jobs:
     #     path: image.tar.gz
     # - if: steps.docker.outputs.cache-hit != 'true'
     #   run: false
-    - run: gunzip -c image.tar.gz | docker load
+    - name: Show
+      run: find .
+    - run: gunzip -c docker-${{ github.sha }} | docker load
     - run: docker images
 
     - name: Import 12.x
@@ -103,7 +104,6 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: node-12.x-${{ github.sha }}
-        path: node-12.x
 
     - name: Show
       run: find .
