@@ -35,7 +35,7 @@ jobs:
     - name: Export
       uses: actions/cache@v2
       with:
-        key: node-${{ matrix.node-version }}
+        key: node-${{ matrix.node-version }}-${{ github.sha }}
         path: |
           !node_modules
           !.github
@@ -72,28 +72,32 @@ jobs:
     steps:
 
     - name: Import Docker
-      id: docker
-      uses: actions/cache@v2
+      uses: actions/download-artifact@v2
       with:
-        key: docker
+        name: docker-${{ github.sha }}
         path: image.tar.gz
-    - if: steps.docker.outputs.cache-hit != 'true'
-      run: false
+    #   id: docker
+    #   uses: actions/cache@v2
+    #   with:
+    #     key: docker
+    #     path: image.tar.gz
+    # - if: steps.docker.outputs.cache-hit != 'true'
+    #   run: false
     - run: gunzip -c image.tar.gz | docker load
     - run: docker images
 
     - name: Import 12.x
-      id: node12
-      uses: actions/cache@v2
+    #   id: node12
+    #   uses: actions/cache@v2
+    #   with:
+    #     key: node-12.x
+    #     path: node-12.x
+    # - if: steps.docker.node12.cache-hit != 'true'
+    #   run: false
+      uses: actions/download-artifact@v2
       with:
-        key: node-12.x
+        name: node-12.x-${{ github.sha }}
         path: node-12.x
-    - if: steps.docker.node12.cache-hit != 'true'
-      run: false
-      # uses: actions/download-artifact@v2
-      # with:
-      #   name: artifact-12.x
-      #   path: node-12.x
     - name: Show
       run: find .
 
@@ -104,3 +108,11 @@ jobs:
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+# delete-artifacts:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: kolpav/purge-artifacts-action@v1
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           expire-in: 7days # Setting this to 0 will delete all artifacts
