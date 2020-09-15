@@ -75,28 +75,17 @@ jobs:
         docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:v${GITHUB_REF/refs\/tags\/v/}
         docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
         docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
-    - name: Docker Images
-      run: docker images
-
-    # - name: Push to Docker Hub
-    #   uses: docker/build-push-action@v1
-    #   with:
-    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-    #     repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}
-    #     tag_with_ref: true
-
     - name: Docker Image Publish
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}
 
-    # - name: Checkout
-    #   uses: actions/checkout@v2
-    # - name: Publish to NPM
-    #   env:
-    #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-    #   run: |
-    #     npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
-    #     npm publish --access=public
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Publish to NPM
+      env:
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      run: |
+        npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+        npm publish --access=public
 
   expire:
     name: Cleanup
