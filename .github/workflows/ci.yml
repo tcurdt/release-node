@@ -72,6 +72,8 @@ jobs:
     - name: Docker Image Publish
       run: echo "TBD"
 
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Publish to NPM
       env:
         NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
