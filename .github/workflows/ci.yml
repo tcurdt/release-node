@@ -43,6 +43,7 @@ jobs:
   docker:
     name: Docker
     runs-on: ubuntu-latest
+    steps:
     - name: Build
       run: docker build -t node-release .
 
