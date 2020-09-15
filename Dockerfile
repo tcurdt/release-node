@@ -15,6 +15,7 @@ RUN apk update && apk upgrade \
 #   && ln -s /usr/local/bin/node /usr/local/bin/nodejs; \
   && apk add --no-cache --virtual .build-dependencies python2 make g++ \
   && npm install --production \
+  && npm run test \
   && apk del .build-dependencies && rm -rf /var/cache/* /tmp/npm*
 USER 1000
 EXPOSE 8080
