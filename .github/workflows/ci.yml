@@ -3,11 +3,6 @@ name: CI
 env:
   project: 'release-node'
 
-# on:
-#   push:
-#     tags:
-#       - '*'
-
 on: [push, pull_request]
 
 jobs:
@@ -62,7 +57,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
     - name: Version
-      run: echo "Publishing ${{ github.ref }} as [${GITHUB_REF/refs\/tags\/v/}] == [${GITHUB_REF#refs/tags/}]"
+      run: echo "Publishing ${{ github.ref }} as ${GITHUB_REF/refs\/tags\/v/}"
 
     - name: Docker Image Download
       uses: actions/download-artifact@v2
@@ -70,20 +65,29 @@ jobs:
         name: docker-image-${{ github.sha }}.tgz
     - name: Docker Image Load
       run: gunzip -c image.tar.gz | docker load && rm image.tar.gz
-    - name: DockerHub Login
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-    - name: Docker Tag
-      run: |
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:v${GITHUB_REF/refs\/tags\/v/}
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
+    # - name: DockerHub Login
+    #   env:
+    #     DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    #   run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    # - name: Docker Tag
+    #   run: |
+    #     docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:v${GITHUB_REF/refs\/tags\/v/}
+    #     docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
+    #     docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
     - name: Docker Images
       run: docker images
-    - name: Docker Image Publish
-      run: docker push ${{ env.project }}
+
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}
+        tag_with_ref: true
+
+    # - name: Docker Image Publish
+    #   run: docker push ${{ env.project }}
 
     # - name: Checkout
     #   uses: actions/checkout@v2
