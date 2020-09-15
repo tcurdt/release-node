@@ -32,24 +32,24 @@ jobs:
       run: npm install
     - name: Test
       run: npm test
-    - name: Export
-      # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-      uses: actions/upload-artifact@v2
-      with:
-        name: node-${{ matrix.node-version }}-${{ github.sha }}
-        path: |
-          !node_modules
-          !.github
-          !.git
-          .
-      # uses: actions/cache@v2
-      # with:
-      #   key: node-${{ matrix.node-version }}-${{ github.sha }}
-      #   path: |
-      #     !node_modules
-      #     !.github
-      #     !.git
-      #     .
+    # - name: Export
+    #   # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: node-${{ matrix.node-version }}-${{ github.sha }}
+    #     path: |
+    #       !node_modules
+    #       !.github
+    #       !.git
+    #       .
+    #   # uses: actions/cache@v2
+    #   # with:
+    #   #   key: node-${{ matrix.node-version }}-${{ github.sha }}
+    #   #   path: |
+    #   #     !node_modules
+    #   #     !.github
+    #   #     !.git
+    #   #     .
 
   docker:
     name: Docker
@@ -63,7 +63,7 @@ jobs:
       run: docker save node-release | gzip > image.tar.gz
     - uses: actions/upload-artifact@v2
       with:
-        name: docker-${{ github.sha }}
+        name: docker-image-${{ github.sha }}.tgz
         path: image.tar.gz
     # - uses: actions/cache@v2
     #   with:
@@ -80,7 +80,7 @@ jobs:
     - name: Import Docker
       uses: actions/download-artifact@v2
       with:
-        name: docker-${{ github.sha }}
+        name: docker-image-${{ github.sha }}.tgz
     #   id: docker
     #   uses: actions/cache@v2
     #   with:
@@ -93,23 +93,23 @@ jobs:
     - run: gunzip -c image.tar.gz | docker load
     - run: docker images
 
-    - name: Import 12.x
-    #   id: node12
-    #   uses: actions/cache@v2
+    # - name: Import 12.x
+    # #   id: node12
+    # #   uses: actions/cache@v2
+    # #   with:
+    # #     key: node-12.x
+    # #     path: node-12.x
+    # # - if: steps.docker.node12.cache-hit != 'true'
+    # #   run: false
+    #   uses: actions/download-artifact@v2
     #   with:
-    #     key: node-12.x
-    #     path: node-12.x
-    # - if: steps.docker.node12.cache-hit != 'true'
-    #   run: false
-      uses: actions/download-artifact@v2
-      with:
-        name: node-12.x-${{ github.sha }}
+    #     name: node-12.x-${{ github.sha }}
 
-    - name: Show
-      run: find .
+    # - name: Show
+    #   run: find .
 
-    # - name: Publish
-    #   run: echo "releasing ${{ github.ref }} as ${GITHUB_REF/refs\/tags\/v/}"
+    - name: Publish
+      run: echo "releasing ${{ github.ref }} as ${GITHUB_REF/refs\/tags\/v/}"
 
     #   uses: mikeal/merge-release@master
     #   env:
