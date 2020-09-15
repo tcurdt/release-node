@@ -61,10 +61,14 @@ jobs:
     - name: Export
       # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
       run: docker save node-release | gzip > image.tar.gz
-    - uses: actions/cache@v2
+    - uses: actions/upload-artifact@v2
       with:
+        name: docker-${{ github.sha }}
         path: image.tar.gz
-        key: docker
+    # - uses: actions/cache@v2
+    #   with:
+    #     key: docker-${{ github.sha }}
+    #     path: image.tar.gz
 
   publish:
     name: Publish
