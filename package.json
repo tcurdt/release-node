@@ -1,6 +1,6 @@
 {
   "name": "@tcurdt/release-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "node release pipeline",
   "author": "Torsten Curdt",
   "license": "MIT",
