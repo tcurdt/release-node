@@ -8,11 +8,17 @@ on: [push, pull_request]
 jobs:
 
   test:
-    name: Node ${{ matrix.node-version }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        include:
+        - name: Linux Node 12.x
+          os: ubuntu-latest
+          node-version: 12.x
+        - name: Linux Node 14.x
+          os: ubuntu-latest
+          node-version: 14.x
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -72,7 +78,6 @@ jobs:
       run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Docker Tag
       run: |
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:v${GITHUB_REF/refs\/tags\/v/}
         docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
         docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
     - name: Docker Image Publish
