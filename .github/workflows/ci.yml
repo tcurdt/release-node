@@ -44,7 +44,7 @@ jobs:
       # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.project }}_${{ matrix.os }}_${{ matrix.node-version }}_${{ github.sha }}
+        name: ${{ env.project }}_${{ matrix.os }}_${{ matrix.node-version }}.zip
         path: build.tgz
 
   # docker:
