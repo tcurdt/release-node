@@ -38,7 +38,7 @@ jobs:
       run: npm test
 
     - name: Tarball
-      run: tar czvf build.tgz .
+      run: tar czvf build.tgz --exclude .git --exclude .github --exclude node_modules --exclude build.tgz .
 
     - name: Upload
       # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
