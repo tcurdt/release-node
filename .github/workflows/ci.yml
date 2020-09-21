@@ -63,6 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      # TODO check package.json matches tag
+
       # - name: Download
       #   uses: actions/download-artifact@v2
       #   with:
