@@ -1,9 +1,9 @@
 name: ci
 
+on: [push, pull_request]
+
 env:
   project: 'release-node'
-
-on: [push, pull_request]
 
 jobs:
 
@@ -77,4 +77,4 @@ jobs:
         #   files: |
         #     artifacts/*.tgz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
