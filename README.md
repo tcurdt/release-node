@@ -2,7 +2,11 @@
 
 A simple yet sane github action setup for node projects.
 It builds and runs test for all selected platforms.
-When a tag gets pushed it creates the github release, does a npm release and pushes an image to dockerhub.
+When a tag gets pushed it creates the github release.
+The github release triggers the release artifacts to be pushed out to
+
+- npm
+- dockerhub
 
 # Secrets
 
