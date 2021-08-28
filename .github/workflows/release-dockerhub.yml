@@ -27,8 +27,12 @@ jobs:
 
     - name: Tag
       run: |
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
-        docker tag ${{ env.project }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
+        echo "SHA=$GITHUB_SHA"
+        docker build --build-arg SHA=$GITHUB_SHA
+          --label "sha=$GITHUB_SHA"
+          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/}
+          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest
+          .
 
     - name: Push
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}
