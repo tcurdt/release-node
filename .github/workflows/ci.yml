@@ -19,6 +19,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Version
+      uses: tcurdt/action-verify-version-npm@master
+
     - name: Setup Node ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -44,8 +47,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Version
-        uses: tcurdt/action-verify-version-npm@master
+      # - name: Checkout
+      #   uses: actions/checkout@v2
+
+      # - name: Version
+      #   uses: tcurdt/action-verify-version-npm@master
 
       # - name: Download
       #   uses: actions/download-artifact@v2
