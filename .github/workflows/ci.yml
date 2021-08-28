@@ -47,24 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # - name: Checkout
-      #   uses: actions/checkout@v2
-
-      # - name: Version
-      #   uses: tcurdt/action-verify-version-npm@master
-
-      # - name: Download
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     path: artifacts
-
-      # - name: Archives
-      #   run: find artifacts -mindepth 1 -maxdepth 1  -exec tar -C {} -cvzf {}.tgz . \;
-
       - name: Release
         uses: softprops/action-gh-release@v1
-        # with:
-        #   files: |
-        #     artifacts/*.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
