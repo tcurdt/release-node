@@ -1,23 +1,21 @@
-FROM alpine:3.12
+# install packages
+FROM node:14-alpine as builder
+RUN mkdir /work
+WORKDIR /work
+RUN apk add --no-cache alpine-sdk python
+COPY package*.json ./
+RUN mkdir -p node_modules && npm ci --only=production
 
-ENV NODE_VERSION 14.2.0
-ENV ARCH x64
-
-# && apk add --no-cache nodejs-npm \
-
-WORKDIR /app
+# fresh image without dev packages
+FROM node:14-alpine
+ARG SHA
+RUN mkdir /work
+WORKDIR /work
+COPY --from=builder /work/node_modules ./node_modules
+RUN npm rebuild -q
 ADD . .
-ENV NPM_CONFIG_LOGLEVEL warn
-RUN apk update && apk upgrade \
- && apk add --no-cache ca-certificates curl \
- && curl -fsSLO --connect-timeout 30 --retry 3 --retry-delay 10 --compressed "https://unofficial-builds.nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" \
- && tar -xJf "node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
- && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
- && apk add --no-cache --virtual .build-dependencies python2 make g++ \
- && npm install --production \
- && npm run test \
- && apk del curl && apk del .build-dependencies && rm -rf /var/cache/* /tmp/npm*
-USER 1000
-EXPOSE 8080
-# EXPOSE 8765
-CMD ["npm","start"]
+RUN echo "{ \"sha\": \"$SHA\" }" > version.json
+RUN cat version.json
+# USER 1000
+# EXPOSE 8080
+CMD [ "node", "index.js" ]
