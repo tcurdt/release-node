@@ -2,13 +2,12 @@ name: dockerhub
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 env:
   project: 'release-node'
 
 jobs:
-
   dockerhub:
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +23,7 @@ jobs:
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      run: echo -n ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
     - name: Tag
       run: |
