@@ -1,6 +1,8 @@
 name: dockerhub
 
 on:
+  schedule:
+    - cron: '29 3 * * *'
   release:
     types: [ published ]
 
@@ -25,7 +27,7 @@ jobs:
       run: |
         echo "SHA=$GITHUB_SHA"
         docker build --build-arg SHA=$GITHUB_SHA \
-          --label "sha=$GITHUB_SHA" \
+          --label "SHA=$GITHUB_SHA" \
           --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/} \
           --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest \
           .
