@@ -27,10 +27,11 @@ jobs:
 
     - name: Build
       run: |
+        env
         echo "SHA=$GITHUB_SHA"
         docker build --build-arg SHA=$GITHUB_SHA \
           --label "SHA=$GITHUB_SHA" \
-          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF/refs\/tags\/v/} \
+          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF##*/} \
           --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest \
           .
 
