@@ -1,8 +1,10 @@
 name: dockerhub
 
 on:
-  schedule:
-    - cron: '29 3 * * *'
+  # schedule:
+  #   - cron: '29 3 * * *'
+  push:
+    branches: [ master ]
   release:
     types: [ published ]
 
