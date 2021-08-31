@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [ ci ]
     push:
-      branches: [ master ]
+      # branches: [ master ]
       tags: [ 'v*' ]
     types:
       - completed
