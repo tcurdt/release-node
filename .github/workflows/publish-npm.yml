@@ -1,12 +1,19 @@
 name: publish on npm
 
 on:
-  release:
-    types: [ published ]
+  workflow_run:
+    workflows: [ ci ]
+    push:
+      branches: [ master ]
+      tags: [ 'v*' ]
+    types:
+      - completed
+  # release:
+  #   types: [ published ]
 
 jobs:
-
   npm:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
 

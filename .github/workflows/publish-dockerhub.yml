@@ -5,17 +5,18 @@ on:
     workflows: [ ci ]
     push:
       branches: [ master ]
+      tags: [ 'v*' ]
     types:
       - completed
-  release:
-    types: [ published ]
+  # release:
+  #   types: [ published ]
 
 env:
   image: ${{ secrets.DOCKERHUB_USERNAME }}/release-node
 
 jobs:
   dockerhub:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
 
