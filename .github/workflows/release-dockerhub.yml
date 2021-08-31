@@ -7,14 +7,16 @@ on:
   #   branches: [ master ]
   workflow_run:
     workflows: [ ci ]
-    branches: [ master ]
+    push:
+      branches: [ master ]
     types:
       - completed
+    # branches: [ master ]
   release:
     types: [ published ]
 
 env:
-  project: 'release-node'
+  image: ${{ secrets.DOCKERHUB_USERNAME }}/release-node
 
 jobs:
   dockerhub:
@@ -36,9 +38,9 @@ jobs:
         echo "SHA=$GITHUB_SHA"
         docker build --build-arg SHA=$GITHUB_SHA \
           --label "SHA=$GITHUB_SHA" \
-          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:${GITHUB_REF##*/} \
-          --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}:latest \
+          --tag ${{ env.image }}:${GITHUB_REF##*/} \
+          --tag ${{ env.image }}:latest \
           .
 
     - name: Push
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.project }}
+      run: docker push ${{ env.image }}
