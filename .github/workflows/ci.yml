@@ -5,6 +5,7 @@ on:
   - pull_request
 
 jobs:
+
   test:
     strategy:
       matrix:
@@ -44,7 +45,58 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+
+  dockerhub:
+    if: github.event_name == 'push'
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    env:
+      image: ${{ secrets.DOCKERHUB_USERNAME }}/release-node
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Version
+      uses: tcurdt/action-verify-version-npm@master
+
+    - name: Login
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      run: echo -n ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+    - name: Build
+      run: |
+        echo "SHA=$GITHUB_SHA"
+        docker build --build-arg SHA=$GITHUB_SHA \
+          --label "SHA=$GITHUB_SHA" \
+          --tag ${{ env.image }}:${GITHUB_REF##*/} \
+          --tag ${{ env.image }}:latest \
+          .
+
+    - name: Push
+      run: docker push ${{ env.image }}
+
+  npm:
+    needs: [ release ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Version
+      uses: tcurdt/action-verify-version-npm@master
+
+    - name: Publish
+      env:
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      run: |
+        npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+        npm install
+        npm publish --access=public
