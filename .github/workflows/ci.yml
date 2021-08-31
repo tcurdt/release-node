@@ -39,16 +39,16 @@ jobs:
     - name: Test
       run: npm test
 
-  # release:
-  #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-  #   needs: [ test ]
-  #   runs-on: ubuntu-latest
-  #   steps:
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    steps:
 
-  #   - name: Release
-  #     uses: softprops/action-gh-release@v1
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.PAT }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.PAT }}
 
   dockerhub:
     if: github.event_name == 'push'
