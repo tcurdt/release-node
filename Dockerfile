@@ -1,5 +1,5 @@
 # install packages
-FROM node:16-alpine as builder
+FROM node:17-alpine as builder
 RUN mkdir /work
 WORKDIR /work
 RUN apk add --no-cache alpine-sdk python3
@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN mkdir -p node_modules && npm ci --only=production
 
 # fresh image without dev packages
-FROM node:16-alpine
+FROM node:17-alpine
 ARG SHA
 RUN mkdir /work
 WORKDIR /work
